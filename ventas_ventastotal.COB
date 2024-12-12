@@ -57,8 +57,14 @@
            05 LECTURA-CANT    PIC 9(3).
            05 LECTURA-PRECIO  PIC 9(3)V99.
 
+       01 MAS-VENDIDO.
+           05 MAS-VENDIDO-CODIGO   PIC X(5) VALUE SPACES.
+           05 MAS-VENDIDO-CANTIDAD PIC zzzz9 VALUE ZEROS.
+
        PROCEDURE DIVISION.
        INICIO.
+      *    Ordenar el archivo ventas.dat con el comando
+      *    "sort ventas.dat > ventas_sorted.dat"
            OPEN INPUT VENTAS
            OPEN OUTPUT TOTAL
            PERFORM LEER-REGISTRO
@@ -66,6 +72,8 @@
            PERFORM GRABAR-TOTAL
            CLOSE VENTAS
            CLOSE TOTAL
+           PERFORM MOSTRAR-RESULTADO
+
            STOP RUN.
 
        LEER-REGISTRO.
@@ -93,6 +101,13 @@
            COMPUTE ACTUAL-INGRESO = ACTUAL-INGRESO +
                                     (LECTURA-CANT * LECTURA-PRECIO)
 
+      * Comparar con el más vendido actual
+
+           IF ACTUAL-CANTIDAD > MAS-VENDIDO-CANTIDAD
+               MOVE ACTUAL-CODIGO TO MAS-VENDIDO-CODIGO
+               MOVE ACTUAL-CANTIDAD TO MAS-VENDIDO-CANTIDAD
+           END-IF
+
            PERFORM LEER-REGISTRO.
 
        GRABAR-TOTAL.
@@ -102,3 +117,22 @@
                WRITE REG-TOTAL
                DISPLAY REG-TOTAL
            END-IF.
+
+       MOSTRAR-RESULTADO.
+           DISPLAY "************************************************"
+                   "**************************"
+           DISPLAY "EL PRODUCTO MAS VENDIDO ES: " MAS-VENDIDO-CODIGO
+                   " CON UN TOTAL DE UNIDADES VENDIDAS: "
+                   MAS-VENDIDO-CANTIDAD.
+           DISPLAY "                                  *  *** ***  *"
+                   "                           "
+           DISPLAY "                                  * *   *   * *"
+                   "                           "
+           DISPLAY "                                  *  *     *  *"
+                   "                           "
+           DISPLAY "                                  *   *   *   *"
+                   "                           "
+           DISPLAY "                                  *     *     *"
+                   "                           "
+           DISPLAY "************************************************"
+                   "**************************".
